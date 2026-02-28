@@ -1,37 +1,46 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import WaveCanvas from "./WaveCanvas";
-import arkLogo from "@/assets/ark-logo.png";
 import { ArrowRight } from "lucide-react";
 
 const Hero = () => {
+  const [hovered, setHovered] = useState(false);
+
   return (
     <section
       id="home"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden cursor-pointer"
       style={{ background: "var(--gradient-hero)" }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
-      <WaveCanvas />
+      <WaveCanvas boosted={hovered} />
 
       {/* Large background text */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
         <h2
-          className="font-heading font-900 tracking-tighter leading-none text-center whitespace-nowrap"
+          className="font-heading font-900 tracking-tighter leading-none text-center whitespace-nowrap transition-all duration-700"
           style={{
             fontSize: "clamp(3rem, 10vw, 10rem)",
-            color: "hsl(168 80% 48% / 0.04)",
+            color: hovered ? "hsl(168 80% 48% / 0.08)" : "hsl(168 80% 48% / 0.04)",
             fontWeight: 900,
+            textShadow: hovered ? "0 0 80px hsl(168 80% 48% / 0.15)" : "none",
           }}
         >
           ARK TECHNOLOGY
         </h2>
       </div>
 
-      <div className="relative z-10 container mx-auto px-4 text-center">
-        <div className="flex justify-center mb-8">
-          <div className="w-32 h-32 md:w-40 md:h-40 rounded-2xl overflow-hidden bg-background/40 backdrop-blur-sm border border-border/30 flex items-center justify-center p-4 animate-float">
-            <img src={arkLogo} alt="ARK Technologies Logo" className="w-full h-full object-contain" />
-          </div>
-        </div>
+      {/* Hover glow overlay */}
+      <div
+        className="absolute inset-0 pointer-events-none transition-opacity duration-700"
+        style={{
+          opacity: hovered ? 1 : 0,
+          background: "radial-gradient(circle at 50% 50%, hsl(168 80% 48% / 0.06) 0%, transparent 60%)",
+        }}
+      />
 
+      <div className="relative z-10 container mx-auto px-4 text-center">
         <h1 className="font-heading font-800 text-4xl md:text-6xl lg:text-7xl mb-6 leading-tight">
           Your Trusted{" "}
           <span className="text-gradient">Shopify</span>
@@ -45,18 +54,18 @@ const Hero = () => {
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <a
-            href="#contact"
+          <Link
+            to="/get-quote"
             className="inline-flex items-center gap-2 px-8 py-3.5 rounded-lg font-semibold text-primary-foreground bg-primary hover:opacity-90 transition-opacity glow-primary"
           >
             Get Started <ArrowRight size={18} />
-          </a>
-          <a
-            href="#services"
+          </Link>
+          <Link
+            to="/contact"
             className="inline-flex items-center gap-2 px-8 py-3.5 rounded-lg font-semibold text-foreground border border-border hover:border-primary/50 hover:text-primary transition-colors"
           >
-            View Our Services
-          </a>
+            Contact Us
+          </Link>
         </div>
       </div>
 
