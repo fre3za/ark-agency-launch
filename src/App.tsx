@@ -14,6 +14,7 @@ import SEOPage from "./pages/services/SEO";
 import CROPage from "./pages/services/CRO";
 import WhyUsPage from "./pages/WhyUs";
 import ProcessPage from "./pages/Process";
+import AboutPage from "./pages/About";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +33,7 @@ const App = () => (
           <Route path="/services/maintenance" element={<MaintenancePage />} />
           <Route path="/services/seo" element={<SEOPage />} />
           <Route path="/services/cro" element={<CROPage />} />
+          <Route path="/about" element={<AboutPage />} />
           <Route path="/why-us" element={<WhyUsPage />} />
           <Route path="/process" element={<ProcessPage />} />
           <Route path="*" element={<NotFound />} />

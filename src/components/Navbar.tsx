@@ -1,18 +1,19 @@
 import { useState, useRef, useEffect } from "react";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown, Wrench, Settings, Search, BarChart3 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import arkLogo from "@/assets/ark-logo.png";
 
 const serviceLinks = [
-  { label: "Troubleshooting", href: "/services/troubleshooting" },
-  { label: "Maintenance", href: "/services/maintenance" },
-  { label: "SEO Optimization", href: "/services/seo" },
-  { label: "CRO", href: "/services/cro" },
+  { label: "Troubleshooting", href: "/services/troubleshooting", icon: Wrench },
+  { label: "Maintenance", href: "/services/maintenance", icon: Settings },
+  { label: "SEO Optimization", href: "/services/seo", icon: Search },
+  { label: "CRO", href: "/services/cro", icon: BarChart3 },
 ];
 
 const navLinks = [
   { label: "Home", href: "/" },
   { label: "Services", href: "#", submenu: serviceLinks },
+  { label: "About Us", href: "/about" },
   { label: "Why Us", href: "/why-us" },
   { label: "Process", href: "/process" },
   { label: "Contact", href: "/contact" },
@@ -66,8 +67,9 @@ const Navbar = () => {
                           key={s.href}
                           to={s.href}
                           onClick={() => setServiceOpen(false)}
-                          className="block px-5 py-3 text-sm text-foreground/80 hover:text-primary hover:bg-primary/5 transition-all border-b border-border/30 last:border-0"
+                          className="flex items-center gap-3 px-5 py-3 text-sm text-foreground/80 hover:text-primary hover:bg-primary/5 transition-all border-b border-border/30 last:border-0"
                         >
+                          <s.icon size={16} className="text-primary/60" />
                           {s.label}
                         </Link>
                       ))}
