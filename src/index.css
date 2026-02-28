@@ -89,4 +89,17 @@
   .glass {
     @apply bg-card/60 backdrop-blur-xl border border-border/50;
   }
+
+  .service-glow:hover {
+    box-shadow: 0 0 30px hsl(168 80% 48% / 0.15), inset 0 1px 0 hsl(168 80% 48% / 0.2);
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.25s ease-out;
 }
