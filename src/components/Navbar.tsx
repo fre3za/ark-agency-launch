@@ -46,25 +46,32 @@ const Navbar = () => {
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map((l) =>
             l.submenu ? (
-              <div key={l.label} ref={dropdownRef} className="relative">
+              <div
+                key={l.label}
+                ref={dropdownRef}
+                className="relative"
+                onMouseEnter={() => setServiceOpen(true)}
+                onMouseLeave={() => setServiceOpen(false)}
+              >
                 <button
-                  onClick={() => setServiceOpen(!serviceOpen)}
                   className="flex items-center gap-1 text-sm font-medium text-foreground/70 hover:text-primary transition-colors"
                 >
                   {l.label} <ChevronDown size={14} className={`transition-transform ${serviceOpen ? "rotate-180" : ""}`} />
                 </button>
                 {serviceOpen && (
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-56 glass rounded-xl overflow-hidden border border-primary/20 shadow-[0_8px_32px_hsl(168_80%_48%/0.15)] animate-fade-in">
-                    {l.submenu.map((s) => (
-                      <Link
-                        key={s.href}
-                        to={s.href}
-                        onClick={() => setServiceOpen(false)}
-                        className="block px-5 py-3 text-sm text-foreground/80 hover:text-primary hover:bg-primary/5 transition-all border-b border-border/30 last:border-0"
-                      >
-                        {s.label}
-                      </Link>
-                    ))}
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 w-56">
+                    <div className="glass rounded-xl overflow-hidden border border-primary/20 shadow-[0_8px_32px_hsl(168_80%_48%/0.15)] animate-fade-in">
+                      {l.submenu.map((s) => (
+                        <Link
+                          key={s.href}
+                          to={s.href}
+                          onClick={() => setServiceOpen(false)}
+                          className="block px-5 py-3 text-sm text-foreground/80 hover:text-primary hover:bg-primary/5 transition-all border-b border-border/30 last:border-0"
+                        >
+                          {s.label}
+                        </Link>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
