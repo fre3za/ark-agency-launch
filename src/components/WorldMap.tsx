@@ -1,212 +1,82 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import worldMapSrc from "@/assets/world-map.png";
 
-// High-resolution dot-matrix world map (~120x60)
-// '#' = land, '.' = water — carefully plotted continents
-const MAP_DATA = [
-  "........................................................................................................................",
-  "........................................................................................................................",
-  "..................................##.##....................................................................................",
-  ".........................########.######.....##.#........................................................................",
-  "........................##########.######...######..........##............................................................",
-  ".......................###########.#######.########.......####............................................................",
-  "......................############.########.########.....#####...........................................................",
-  ".....................#############.########.#########...######............................................................",
-  "....................##############.########.##########.#######............................................................",
-  "...................###.###########.########.##################...........................................................",".....................####.#########..########.#################............................................................",
-  "......................###.########..########.################.............................................................","........................##.########..#######..###############..............................................................",
-  ".........................#.#######...######...#############................................................................",
-  "..........................########...######....###########.................................................................","............................#######....#####.....#########..................................................................","..............................#####.....####......#######...................................................................","................................####.....###.......#####....................................................................",
-  ".................................###....##.........####.....................................................................",
-  "..................................##....#...........##......................................................................",
-  "...................................#.................#......................................................................",
-  "........................................................................................................................",
-  "........................................................................................................................",
-  "........................................................................................................................",
-  "........................................................................................................................",
-  "........................................................................................................................",
-  "........................................................................................................................",
-  "........................................................................................................................",
-  "........................................................................................................................",
-  "........................................................................................................................",
-];
-
-// Better approach: use coordinate-based continent outlines
-// We'll draw dots programmatically based on continent polygons
-
-const WorldMapCanvas = () => {
+const WorldMap = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const mouseRef = useRef({ x: -1000, y: -1000 });
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    const container = containerRef.current;
+    if (!canvas || !container) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     let animId: number;
-
-    // World map points using Mercator-like projection
-    // Format: [longitude(-180 to 180), latitude(-90 to 90)]
-    // We'll generate a grid and check if each point is "land"
-    
-    // Continent bounding polygons (simplified but accurate shapes)
-    const continents: { name: string; points: [number, number][]; highlight?: boolean }[] = [
-      // North America
-      { name: "NA", highlight: true, points: [
-        [-168,72],[-162,70],[-155,71],[-140,70],[-130,72],[-120,74],[-110,74],[-100,74],[-95,72],[-85,76],[-80,76],[-70,78],[-65,82],[-60,83],[-50,72],[-55,68],[-58,65],[-62,60],[-68,58],[-72,56],[-75,52],[-78,48],[-82,45],[-80,40],[-82,36],[-82,30],[-84,28],[-88,28],[-90,28],[-95,26],[-97,20],[-100,18],[-104,18],[-106,22],[-110,24],[-112,28],[-115,30],[-118,34],[-122,36],[-124,40],[-124,44],[-126,48],[-130,52],[-134,56],[-140,58],[-148,60],[-152,58],[-158,58],[-162,62],[-165,64],[-168,66],[-168,72]
-      ]},
-      // South America
-      { name: "SA", points: [
-        [-82,10],[-78,10],[-72,12],[-68,12],[-62,10],[-60,8],[-52,4],[-50,0],[-50,-2],[-48,-6],[-46,-8],[-42,-10],[-40,-12],[-38,-14],[-36,-10],[-35,-6],[-35,-2],[-36,-15],[-38,-18],[-42,-22],[-44,-23],[-46,-24],[-48,-26],[-50,-28],[-52,-32],[-56,-34],[-58,-36],[-60,-38],[-64,-40],[-66,-42],[-68,-44],[-70,-46],[-72,-48],[-76,-50],[-76,-46],[-74,-42],[-72,-38],[-70,-34],[-70,-28],[-70,-22],[-72,-18],[-74,-14],[-76,-8],[-78,-2],[-80,2],[-78,6],[-76,8],[-82,10]
-      ]},
-      // Europe
-      { name: "EU", highlight: true, points: [
-        [-10,36],[0,36],[4,38],[2,42],[-2,44],[-8,44],[-10,40],[-10,36],
-      ]},
-      { name: "EU2", highlight: true, points: [
-        [0,36],[6,38],[10,38],[12,42],[10,46],[6,48],[2,48],[0,46],[-4,48],[-6,50],[-6,54],[-4,56],[-2,58],[4,56],[8,54],[10,56],[12,58],[14,60],[16,62],[18,64],[20,66],[24,68],[28,70],[30,70],[32,68],[28,66],[26,62],[24,58],[22,54],[24,52],[28,54],[30,56],[34,58],[36,60],[40,62],[44,62],[48,64],[50,66],[56,68],[60,68],[64,70],[68,72],[68,68],[64,66],[60,62],[56,58],[50,54],[44,50],[42,48],[40,46],[36,42],[32,40],[28,38],[24,36],[20,36],[16,38],[14,40],[12,42],[10,38],[6,38],[0,36]
-      ]},
-      // Africa
-      { name: "AF", points: [
-        [-16,14],[-16,18],[-14,22],[-12,26],[-8,30],[-4,32],[0,34],[4,36],[8,36],[10,34],[12,32],[14,30],[18,32],[24,32],[28,30],[32,30],[34,28],[36,26],[38,22],[40,16],[42,12],[44,10],[46,6],[48,2],[50,0],[50,-4],[48,-8],[44,-14],[42,-18],[40,-22],[38,-26],[36,-28],[34,-30],[32,-34],[30,-34],[28,-32],[26,-30],[24,-28],[20,-28],[18,-30],[16,-28],[14,-24],[12,-18],[10,-10],[8,-4],[6,0],[4,4],[2,6],[0,8],[-4,10],[-8,12],[-12,12],[-16,14]
-      ]},
-      // Asia (main body)
-      { name: "AS", highlight: true, points: [
-        [40,42],[44,42],[48,38],[52,38],[56,36],[60,34],[64,32],[68,28],[72,24],[76,22],[80,16],[82,12],[80,8],[78,6],[76,8],[74,12],[72,16],[70,20],[68,22],[64,24],[60,28],[56,32],[52,34],[48,36],[44,38],[40,42]
-      ]},
-      { name: "AS2", highlight: true, points: [
-        [68,72],[72,72],[80,70],[88,72],[96,72],[100,70],[104,70],[110,68],[120,66],[130,66],[140,64],[145,62],[150,60],[155,58],[160,56],[162,54],[160,50],[158,48],[155,46],[150,44],[145,42],[140,40],[135,36],[130,34],[128,32],[125,30],[122,28],[120,24],[118,20],[116,16],[114,12],[112,8],[110,4],[108,2],[106,0],[104,2],[102,4],[100,6],[98,10],[96,14],[94,18],[92,20],[90,22],[88,24],[86,22],[84,20],[82,18],[80,20],[78,22],[76,24],[74,28],[72,32],[70,36],[68,40],[66,44],[64,48],[62,52],[60,56],[58,60],[60,64],[62,66],[64,68],[68,72]
-      ]},
-      // Australia
-      { name: "AU", points: [
-        [114,-12],[118,-14],[122,-16],[126,-18],[130,-20],[134,-22],[136,-24],[138,-26],[140,-28],[142,-30],[144,-32],[146,-34],[148,-36],[150,-38],[152,-36],[154,-34],[152,-30],[150,-26],[148,-22],[146,-20],[144,-18],[142,-16],[138,-14],[134,-12],[130,-12],[126,-12],[122,-12],[118,-12],[114,-12]
-      ]},
-    ];
-
-    // Convert lat/lon to canvas x/y
-    const toCanvas = (lon: number, lat: number, cw: number, ch: number): [number, number] => {
-      const x = ((lon + 180) / 360) * cw;
-      const y = ((90 - lat) / 180) * ch;
-      return [x, y];
-    };
-
-    // Point-in-polygon test
-    const pointInPolygon = (px: number, py: number, polygon: [number, number][]): boolean => {
-      let inside = false;
-      for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-        const xi = polygon[i][0], yi = polygon[i][1];
-        const xj = polygon[j][0], yj = polygon[j][1];
-        if ((yi > py) !== (yj > py) && px < ((xj - xi) * (py - yi)) / (yj - yi) + xi) {
-          inside = !inside;
-        }
-      }
-      return inside;
-    };
-
-    // Pre-compute land dots
-    const computeDots = (cw: number, ch: number) => {
-      const spacing = Math.max(8, Math.min(12, cw / 100));
-      const dots: { x: number; y: number; highlight: boolean }[] = [];
-      
-      for (let gx = spacing / 2; gx < cw; gx += spacing) {
-        for (let gy = spacing / 2; gy < ch; gy += spacing) {
-          // Convert canvas position back to lon/lat
-          const lon = (gx / cw) * 360 - 180;
-          const lat = 90 - (gy / ch) * 180;
-          
-          let isLand = false;
-          let isHighlight = false;
-          
-          for (const c of continents) {
-            if (pointInPolygon(lon, lat, c.points)) {
-              isLand = true;
-              if (c.highlight) isHighlight = true;
-              break;
-            }
-          }
-          
-          if (isLand) {
-            dots.push({ x: gx, y: gy, highlight: isHighlight });
-          }
-        }
-      }
-      return { dots, spacing };
-    };
+    const dpr = window.devicePixelRatio || 1;
 
     const resize = () => {
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = canvas.offsetWidth * dpr;
-      canvas.height = canvas.offsetHeight * dpr;
+      canvas.width = container.offsetWidth * dpr;
+      canvas.height = container.offsetHeight * dpr;
     };
     resize();
 
-    let cachedDots: { x: number; y: number; highlight: boolean }[] = [];
-    let cachedSpacing = 10;
-    let lastW = 0, lastH = 0;
-
+    // Draw hover glow + ripple effects over the image
     const draw = (t: number) => {
-      const dpr = window.devicePixelRatio || 1;
-      const cw = canvas.offsetWidth;
-      const ch = canvas.offsetHeight;
-      
+      const cw = container.offsetWidth;
+      const ch = container.offsetHeight;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, cw, ch);
 
-      // Recompute dots if size changed
-      if (cw !== lastW || ch !== lastH) {
-        const result = computeDots(cw, ch);
-        cachedDots = result.dots;
-        cachedSpacing = result.spacing;
-        lastW = cw;
-        lastH = ch;
-      }
-
       const mx = mouseRef.current.x;
       const my = mouseRef.current.y;
-      const baseR = cachedSpacing * 0.2;
 
-      for (const dot of cachedDots) {
-        const dx = mx - dot.x;
-        const dy = my - dot.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        const hover = dist < 50;
+      if (mx > 0 && my > 0) {
+        // Glow under cursor
+        const grad = ctx.createRadialGradient(mx, my, 0, mx, my, 80);
+        grad.addColorStop(0, "hsla(168, 80%, 48%, 0.25)");
+        grad.addColorStop(0.5, "hsla(168, 80%, 48%, 0.08)");
+        grad.addColorStop(1, "hsla(168, 80%, 48%, 0)");
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, cw, ch);
 
-        const pulse = dot.highlight
-          ? 0.12 * Math.sin(t * 0.002 + dot.x * 0.02 + dot.y * 0.02)
-          : 0.06 * Math.sin(t * 0.001 + dot.x * 0.03 + dot.y * 0.03);
-
-        const r = hover ? baseR * 2 : baseR * (1 + pulse);
-
-        ctx.beginPath();
-        ctx.arc(dot.x, dot.y, Math.max(r, 0.8), 0, Math.PI * 2);
-
-        if (dot.highlight) {
-          const alpha = hover ? 0.95 : 0.5 + pulse;
-          ctx.fillStyle = `hsla(168, 80%, 48%, ${alpha})`;
-          if (hover) {
-            ctx.shadowColor = "hsla(168, 80%, 48%, 0.5)";
-            ctx.shadowBlur = 10;
-          } else {
-            ctx.shadowBlur = 0;
-          }
-        } else {
-          const alpha = hover ? 0.7 : 0.25 + pulse;
-          ctx.fillStyle = `hsla(0, 0%, 75%, ${alpha})`;
-          ctx.shadowBlur = 0;
+        // Ripple rings
+        for (let i = 0; i < 3; i++) {
+          const wave = ((t * 0.04) + i * 40) % 120;
+          const alpha = Math.max(0, 0.18 - wave * 0.0015);
+          ctx.beginPath();
+          ctx.arc(mx, my, wave, 0, Math.PI * 2);
+          ctx.strokeStyle = `hsla(168, 80%, 48%, ${alpha})`;
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
         }
-        ctx.fill();
+
+        // Floating particles near cursor
+        for (let i = 0; i < 8; i++) {
+          const angle = (t * 0.001 + i * 0.785);
+          const dist = 30 + 20 * Math.sin(t * 0.002 + i);
+          const px = mx + Math.cos(angle) * dist;
+          const py = my + Math.sin(angle) * dist;
+          const r = 1.5 + Math.sin(t * 0.003 + i) * 0.8;
+          ctx.beginPath();
+          ctx.arc(px, py, r, 0, Math.PI * 2);
+          ctx.fillStyle = `hsla(168, 80%, 48%, ${0.4 + 0.2 * Math.sin(t * 0.003 + i)})`;
+          ctx.fill();
+        }
       }
 
-      ctx.shadowBlur = 0;
-
-      // Ripple
-      if (mx > 0 && my > 0) {
-        const wave = (t * 0.04) % 100;
+      // Subtle ambient floating particles
+      for (let i = 0; i < 12; i++) {
+        const px = (cw * 0.1) + ((i * 97 + t * 0.008) % (cw * 0.8));
+        const py = (ch * 0.1) + ((i * 67 + Math.sin(t * 0.001 + i) * 30) % (ch * 0.8));
+        const r = 1 + 0.5 * Math.sin(t * 0.002 + i * 2);
+        const alpha = 0.15 + 0.1 * Math.sin(t * 0.002 + i);
         ctx.beginPath();
-        ctx.arc(mx, my, wave, 0, Math.PI * 2);
-        ctx.strokeStyle = `hsla(168, 80%, 48%, ${Math.max(0, 0.12 - wave * 0.0012)})`;
-        ctx.lineWidth = 1;
-        ctx.stroke();
+        ctx.arc(px, py, r, 0, Math.PI * 2);
+        ctx.fillStyle = `hsla(168, 80%, 48%, ${alpha})`;
+        ctx.fill();
       }
 
       animId = requestAnimationFrame(draw);
@@ -215,30 +85,42 @@ const WorldMapCanvas = () => {
     animId = requestAnimationFrame(draw);
 
     const onMove = (e: MouseEvent) => {
-      const rect = canvas.getBoundingClientRect();
+      const rect = container.getBoundingClientRect();
       mouseRef.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
     };
     const onLeave = () => { mouseRef.current = { x: -1000, y: -1000 }; };
 
-    canvas.addEventListener("mousemove", onMove);
-    canvas.addEventListener("mouseleave", onLeave);
-    window.addEventListener("resize", () => { resize(); lastW = 0; });
+    const onResize = () => { resize(); };
+
+    container.addEventListener("mousemove", onMove);
+    container.addEventListener("mouseleave", onLeave);
+    window.addEventListener("resize", onResize);
 
     return () => {
       cancelAnimationFrame(animId);
-      canvas.removeEventListener("mousemove", onMove);
-      canvas.removeEventListener("mouseleave", onLeave);
-      window.removeEventListener("resize", resize);
+      container.removeEventListener("mousemove", onMove);
+      container.removeEventListener("mouseleave", onLeave);
+      window.removeEventListener("resize", onResize);
     };
   }, []);
 
   return (
-    <canvas
-      ref={canvasRef}
-      className="absolute inset-0 w-full h-full"
-      style={{ zIndex: 0 }}
-    />
+    <div ref={containerRef} className="absolute inset-0 w-full h-full" style={{ zIndex: 0 }}>
+      <img
+        src={worldMapSrc}
+        alt="World map"
+        className={`absolute inset-0 w-full h-full object-contain opacity-0 transition-opacity duration-1000 ${imageLoaded ? "opacity-60" : ""}`}
+        onLoad={() => setImageLoaded(true)}
+        draggable={false}
+        style={{ pointerEvents: "none", filter: "brightness(1.2) contrast(1.1)" }}
+      />
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full"
+        style={{ zIndex: 1 }}
+      />
+    </div>
   );
 };
 
-export default WorldMapCanvas;
+export default WorldMap;
