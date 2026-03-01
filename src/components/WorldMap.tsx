@@ -1,33 +1,69 @@
 import { useEffect, useRef } from "react";
 
-const DOTS_SPACING = 12;
-const DOT_RADIUS = 1.5;
-
-// Simplified world map coordinate boundaries (lat/lng to x/y)
-// Each region is an array of [minLng, maxLng, minLat, maxLat]
-const regions: { name: string; bounds: number[][]; highlight?: boolean }[] = [
-  { name: "North America", bounds: [[200, 420, 60, 220]], highlight: true },
-  { name: "South America", bounds: [[280, 400, 220, 420]] },
-  { name: "Europe", bounds: [[440, 560, 60, 180]], highlight: true },
-  { name: "Africa", bounds: [[430, 560, 180, 380]] },
-  { name: "Asia", bounds: [[560, 780, 60, 280]], highlight: true },
-  { name: "Oceania", bounds: [[700, 820, 280, 380]] },
+// Simplified world map as dot grid using a bitmap approach
+// Each row is a string where '#' = land, '.' = water
+// This is a ~80x40 grid representing the world
+const MAP_DATA = [
+  "................................................................................",
+  "................................................................................",
+  "....................####.....########..........................................",
+  "...................######...##########....####.................................",
+  "..................########.###########...######..........####..................",
+  ".................#########.###########..########........######.................",
+  "................##########.###########..#########......########................",
+  "...............###########.###########..##########....##########...............",
+  "..............############.###########..###########..############..............",
+  ".............############..###########..###########.##############.............",
+  "............#############..##########...##########..###############............",
+  "...........##############..##########..##########...################...........",
+  "..........###############..#########...#########....################...........",
+  ".........################..#########..#########.....#################..........",
+  "........####...##########..########...########......#################..........",
+  ".......###.....#########...########..#######........################...........",
+  "......##......#########....#######...######..........###############...........",
+  ".............#########.....######....#####............##############...........",
+  "............########.......#####.....####..............############............",
+  "...........#######.........####.....###.................##########.............",
+  "..........######...........###......##...................########..............",
+  ".........#####.............##.......#.....................######...............",
+  "........####..............##................................####...............",
+  ".......####...............#..................................##................",
+  "......####.......................................................#####........",
+  ".....####......................................................#######.......",
+  "....####......................................................########.......",
+  "....###......................................................#########.......",
+  "...###......................................................##########.......",
+  "...##.......................................................#########........",
+  "...#.........................................................########........",
+  "..............................................................######.........",
+  "...............................................................####..........",
+  "................................................................##...........",
+  "................................................................................",
+  "................................................................................",
+  "................................................................................",
+  "................................................................................",
+  "................................................................................",
+  "................................................................................",
 ];
 
-const isInRegion = (x: number, y: number): { inRegion: boolean; highlight: boolean } => {
-  for (const region of regions) {
-    for (const [minX, maxX, minY, maxY] of region.bounds) {
-      if (x >= minX && x <= maxX && y >= minY && y <= maxY) {
-        return { inRegion: true, highlight: !!region.highlight };
-      }
-    }
-  }
-  return { inRegion: false, highlight: false };
+const ROWS = MAP_DATA.length;
+const COLS = MAP_DATA[0].length;
+
+// Highlighted regions (approximate grid coords): NA, Europe, Asia
+const isHighlighted = (col: number, row: number): boolean => {
+  // North America
+  if (col >= 5 && col <= 22 && row >= 2 && row <= 18) return true;
+  // Europe
+  if (col >= 32 && col <= 45 && row >= 2 && row <= 14) return true;
+  // Asia (partial)
+  if (col >= 46 && col <= 70 && row >= 2 && row <= 20) return true;
+  return false;
 };
 
 const WorldMap = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const mouseRef = useRef({ x: -1000, y: -1000 });
+  const timeRef = useRef(0);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -36,44 +72,94 @@ const WorldMap = () => {
     if (!ctx) return;
 
     let animId: number;
-    let w = (canvas.width = canvas.offsetWidth);
-    let h = (canvas.height = canvas.offsetHeight);
+    let w: number, h: number;
 
-    const draw = () => {
-      ctx.clearRect(0, 0, w, h);
+    const resize = () => {
+      w = canvas.width = canvas.offsetWidth * (window.devicePixelRatio || 1);
+      h = canvas.height = canvas.offsetHeight * (window.devicePixelRatio || 1);
+      ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+    };
+    resize();
+
+    const draw = (t: number) => {
+      timeRef.current = t;
+      const cw = canvas.offsetWidth;
+      const ch = canvas.offsetHeight;
+      ctx.clearRect(0, 0, cw * 2, ch * 2);
+      ctx.setTransform(window.devicePixelRatio || 1, 0, 0, window.devicePixelRatio || 1, 0, 0);
+
       const mx = mouseRef.current.x;
       const my = mouseRef.current.y;
 
-      for (let x = 0; x < w; x += DOTS_SPACING) {
-        for (let y = 0; y < h; y += DOTS_SPACING) {
-          const { inRegion, highlight } = isInRegion(x, y);
-          if (!inRegion) continue;
+      const dotSpacingX = cw / COLS;
+      const dotSpacingY = ch / ROWS;
+      const baseRadius = Math.min(dotSpacingX, dotSpacingY) * 0.22;
+
+      for (let row = 0; row < ROWS; row++) {
+        for (let col = 0; col < COLS; col++) {
+          if (MAP_DATA[row][col] !== '#') continue;
+
+          const x = (col + 0.5) * dotSpacingX;
+          const y = (row + 0.5) * dotSpacingY;
 
           const dx = mx - x;
           const dy = my - y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          const hover = dist < 80;
+          const hover = dist < 60;
+
+          const highlight = isHighlighted(col, row);
+
+          // Pulse animation for highlighted dots
+          const pulse = highlight
+            ? 0.15 * Math.sin(t * 0.002 + col * 0.08 + row * 0.06)
+            : 0.05 * Math.sin(t * 0.001 + col * 0.1 + row * 0.1);
+
+          const radius = hover
+            ? baseRadius * 1.8
+            : baseRadius * (1 + pulse);
 
           ctx.beginPath();
-          ctx.arc(x, y, hover ? DOT_RADIUS + 1 : DOT_RADIUS, 0, Math.PI * 2);
+          ctx.arc(x, y, Math.max(radius, 0.5), 0, Math.PI * 2);
 
           if (highlight) {
-            ctx.fillStyle = hover
-              ? "hsla(168, 80%, 48%, 0.9)"
-              : "hsla(168, 80%, 48%, 0.5)";
+            const alpha = hover ? 0.95 : 0.45 + pulse * 0.8;
+            ctx.fillStyle = `hsla(168, 80%, 48%, ${alpha})`;
+            if (hover) {
+              ctx.shadowColor = "hsla(168, 80%, 48%, 0.6)";
+              ctx.shadowBlur = 12;
+            } else {
+              ctx.shadowColor = "transparent";
+              ctx.shadowBlur = 0;
+            }
           } else {
-            ctx.fillStyle = hover
-              ? "hsla(200, 20%, 92%, 0.7)"
-              : "hsla(200, 20%, 92%, 0.25)";
+            const alpha = hover ? 0.6 : 0.18 + pulse * 0.3;
+            ctx.fillStyle = `hsla(200, 20%, 80%, ${alpha})`;
+            ctx.shadowColor = "transparent";
+            ctx.shadowBlur = 0;
           }
+
           ctx.fill();
         }
+      }
+
+      // Reset shadow
+      ctx.shadowColor = "transparent";
+      ctx.shadowBlur = 0;
+
+      // Ripple wave from mouse
+      if (mx > 0 && my > 0) {
+        const wave = (t * 0.05) % 120;
+        ctx.beginPath();
+        ctx.arc(mx, my, wave, 0, Math.PI * 2);
+        ctx.strokeStyle = `hsla(168, 80%, 48%, ${Math.max(0, 0.15 - wave * 0.0012)})`;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
       }
 
       animId = requestAnimationFrame(draw);
     };
 
-    draw();
+    animId = requestAnimationFrame(draw);
 
     const onMove = (e: MouseEvent) => {
       const rect = canvas.getBoundingClientRect();
@@ -82,20 +168,16 @@ const WorldMap = () => {
     const onLeave = () => {
       mouseRef.current = { x: -1000, y: -1000 };
     };
-    const onResize = () => {
-      w = canvas.width = canvas.offsetWidth;
-      h = canvas.height = canvas.offsetHeight;
-    };
 
     canvas.addEventListener("mousemove", onMove);
     canvas.addEventListener("mouseleave", onLeave);
-    window.addEventListener("resize", onResize);
+    window.addEventListener("resize", resize);
 
     return () => {
       cancelAnimationFrame(animId);
       canvas.removeEventListener("mousemove", onMove);
       canvas.removeEventListener("mouseleave", onLeave);
-      window.removeEventListener("resize", onResize);
+      window.removeEventListener("resize", resize);
     };
   }, []);
 
