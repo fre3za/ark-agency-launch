@@ -27,7 +27,7 @@ const Hero = () => {
             textShadow: hovered ? "0 0 80px hsl(168 80% 48% / 0.15)" : "none",
           }}
         >
-          ARK TECHNOLOGY
+          ARKTECHIFY
         </h2>
       </div>
 

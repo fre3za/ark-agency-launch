@@ -14,7 +14,7 @@ const CTA = () => (
               Ready to <span className="text-gradient">Scale</span> Your Store?
             </h2>
             <p className="text-muted-foreground text-lg mb-8 max-w-lg mx-auto">
-              Let's discuss how ARK Technologies can help you achieve your e-commerce goals. Get a free consultation today.
+              Let's discuss how ArkTechify can help you achieve your e-commerce goals. Get a free consultation today.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link to="/get-quote" className="inline-flex items-center gap-2 px-8 py-3.5 rounded-lg font-semibold text-primary-foreground bg-primary hover:opacity-90 transition-opacity glow-primary">

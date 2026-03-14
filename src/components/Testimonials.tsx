@@ -2,7 +2,7 @@ import { Star } from "lucide-react";
 import ScrollReveal from "./ScrollReveal";
 
 const testimonials = [
-  { name: "Sarah Mitchell", role: "Founder, Bloom & Co.", text: "ARK Technologies completely transformed our Shopify store. Our page load time dropped by 60% and conversions jumped within the first month.", rating: 5 },
+  { name: "Sarah Mitchell", role: "Founder, Bloom & Co.", text: "ArkTechify completely transformed our Shopify store. Our page load time dropped by 60% and conversions jumped within the first month.", rating: 5 },
   { name: "James Rivera", role: "CEO, UrbanEdge Apparel", text: "Their SEO work was phenomenal. We went from page 3 to ranking in the top 5 for our key terms. Truly outstanding results.", rating: 5 },
   { name: "Priya Kapoor", role: "Operations Lead, FreshNest", text: "Fast, professional, and incredibly thorough. They diagnosed and fixed critical issues we didn't even know we had. Highly recommend.", rating: 5 },
   { name: "David Chen", role: "Co-founder, Luxe Home Co.", text: "The ongoing maintenance plan gives us complete peace of mind. Our store runs flawlessly and their support is always just a message away.", rating: 4 },
