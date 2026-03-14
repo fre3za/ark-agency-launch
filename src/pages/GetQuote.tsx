@@ -69,7 +69,7 @@ const GetQuote = () => {
               </div>
               <div>
                 <label className="block text-sm font-semibold mb-2">Phone Number</label>
-                <input name="phone" value={form.phone} onChange={handleChange} placeholder="+91 7566527404"
+                <input name="phone" value={form.phone} onChange={handleChange} placeholder="+1 (555) 123-4567"
                   className="w-full px-4 py-3 rounded-lg bg-card border border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors" />
               </div>
               <div>

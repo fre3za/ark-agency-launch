@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Instagram, Linkedin, Twitter, Facebook } from "lucide-react";
+import { Instagram, Linkedin, Twitter } from "lucide-react";
 import arkLogo from "@/assets/ark-logo.png";
 
 const Footer = () => (

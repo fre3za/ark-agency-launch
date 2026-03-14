@@ -3,7 +3,7 @@ import ScrollReveal from "./ScrollReveal";
 import WorldMap from "./WorldMap";
 
 const stats = [
-  { value: "150+", label: "Stores Launched" },
+  { value: "2+", label: "Stores Launched" },
   { value: "98%", label: "Client Satisfaction" },
   { value: "24h", label: "Avg Response Time" },
   { value: "5+", label: "Years Experience" },
