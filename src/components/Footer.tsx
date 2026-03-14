@@ -13,7 +13,7 @@ const Footer = () => (
           </p>
           <div className="flex items-center gap-3">
             {[
-              { icon: Instagram, href: "https://www.instagram.com/arktechify/" },
+              { icon: Instagram, href: "https://www.instagram.com/arktechify?utm_source=qr&igsh=aHE0c2t4aDFiNzlv" },
               { icon: Linkedin, href: "https://www.linkedin.com/in/ark-techify-5a24543b7" },
               { icon: Twitter, href: "https://x.com/Arktechify" },
             ].map(({ icon: Icon, href }, i) => (
