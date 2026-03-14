@@ -16,14 +16,29 @@ const GetQuote = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-    setTimeout(() => {
+    try {
+      const res = await fetch("https://formsubmit.co/ajax/sales@arktechify.com", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          ...form,
+          _subject: "New Quote Request from ArkTechify Website",
+        }),
+      });
+      if (res.ok) {
+        toast({ title: "Quote Request Sent!", description: "We'll get back to you within 24 hours." });
+        setForm({ name: "", email: "", phone: "", business: "", website: "", service: "", budget: "", shopifyPlan: "", message: "" });
+      } else {
+        throw new Error("Failed");
+      }
+    } catch {
+      toast({ title: "Error", description: "Something went wrong. Please try again.", variant: "destructive" });
+    } finally {
       setSubmitting(false);
-      toast({ title: "Quote Request Sent!", description: "We'll get back to you within 24 hours." });
-      setForm({ name: "", email: "", phone: "", business: "", website: "", service: "", budget: "", shopifyPlan: "", message: "" });
-    }, 1500);
+    }
   };
 
   return (
@@ -54,7 +69,7 @@ const GetQuote = () => {
               </div>
               <div>
                 <label className="block text-sm font-semibold mb-2">Phone Number</label>
-                <input name="phone" value={form.phone} onChange={handleChange} placeholder="+1 (385) 240-2913"
+                <input name="phone" value={form.phone} onChange={handleChange} placeholder="+91 7566527404"
                   className="w-full px-4 py-3 rounded-lg bg-card border border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors" />
               </div>
               <div>

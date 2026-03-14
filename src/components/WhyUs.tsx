@@ -44,7 +44,7 @@ const WhyUs = () => (
         <div className="grid lg:grid-cols-2 gap-16 items-start">
           <ScrollReveal>
             <div>
-              <p className="text-primary font-semibold text-sm tracking-widest uppercase mb-3">Why ARK Technologies</p>
+              <p className="text-primary font-semibold text-sm tracking-widest uppercase mb-3">Why ArkTechify</p>
               <h2 className="font-heading text-3xl md:text-5xl font-bold mb-6">
                 Built for <span className="text-gradient">E-Commerce</span> Success
               </h2>

@@ -12,18 +12,15 @@ const values = [
 ];
 
 const milestones = [
-  { year: "2021", title: "Founded", desc: "ARK Technologies was born with a mission to empower Shopify merchants worldwide." },
-  { year: "2022", title: "50+ Stores", desc: "Reached our first major milestone helping over 50 stores optimize their performance." },
-  { year: "2023", title: "Global Expansion", desc: "Expanded our team and client base across USA, UK, Canada, and India." },
-  { year: "2024", title: "100+ Clients", desc: "Surpassed 100 happy clients with a 98% satisfaction rate." },
-  { year: "2025", title: "Industry Leader", desc: "Recognized as a top Shopify agency for troubleshooting and optimization." },
+  { year: "2026", title: "Founded", desc: "ArkTechify was born with a mission to empower Shopify merchants worldwide." },
+  { year: "2026", title: "Global Expansion", desc: "Expanded our team and client base across India and the United States." },
 ];
 
 const team = [
-  { name: "Alex Rivera", role: "Founder & CEO", desc: "10+ years in e-commerce with a passion for Shopify excellence." },
-  { name: "Sarah Chen", role: "Lead Developer", desc: "Full-stack expert specializing in Shopify Liquid and custom apps." },
-  { name: "James Wilson", role: "SEO Strategist", desc: "Data-driven SEO specialist with proven e-commerce results." },
-  { name: "Priya Sharma", role: "CRO Specialist", desc: "Conversion optimization expert focused on revenue growth." },
+  { name: "Yash Paul", role: "CEO", desc: "Visionary leader driving ArkTechify's mission to empower Shopify merchants globally." },
+  { name: "Ali Sheikh", role: "Lead Developer", desc: "Full-stack expert specializing in Shopify Liquid and custom apps." },
+  { name: "Joel Williamson", role: "SEO Strategist", desc: "Data-driven SEO specialist with proven e-commerce results." },
+  { name: "Ali Sheikh", role: "CRO Specialist", desc: "Conversion optimization expert focused on revenue growth." },
 ];
 
 const AboutPage = () => (
@@ -53,12 +50,12 @@ const AboutPage = () => (
         {/* Hero */}
         <ScrollReveal>
           <div className="text-center max-w-3xl mx-auto mb-20">
-            <p className="text-primary font-semibold text-sm tracking-widest uppercase mb-3">About ARK Technologies</p>
+            <p className="text-primary font-semibold text-sm tracking-widest uppercase mb-3">About ArkTechify</p>
             <h1 className="font-heading text-4xl md:text-6xl font-bold mb-6">
               We Build <span className="text-gradient">E-Commerce</span> Success Stories
             </h1>
             <p className="text-muted-foreground text-lg leading-relaxed">
-              ARK Technologies is a Shopify-focused agency dedicated to helping merchants build, optimize, and scale their online stores. From troubleshooting critical issues to driving conversions, we're your trusted growth partner.
+              ArkTechify is a Shopify-focused agency dedicated to helping merchants build, optimize, and scale their online stores. From troubleshooting critical issues to driving conversions, we're your trusted growth partner.
             </p>
           </div>
         </ScrollReveal>
@@ -66,9 +63,9 @@ const AboutPage = () => (
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-24">
           {[
-            { icon: ShoppingBag, value: "150+", label: "Stores Launched" },
+            { icon: ShoppingBag, value: "2+", label: "Stores Launched" },
             { icon: Users, value: "98%", label: "Client Satisfaction" },
-            { icon: Globe, value: "12+", label: "Countries Served" },
+            { icon: Globe, value: "2+", label: "Countries Served" },
             { icon: TrendingUp, value: "3x", label: "Avg Revenue Growth" },
           ].map((s, i) => (
             <ScrollReveal key={s.label} delay={i * 100}>
@@ -115,7 +112,7 @@ const AboutPage = () => (
         </ScrollReveal>
         <div className="max-w-3xl mx-auto mb-24">
           {milestones.map((m, i) => (
-            <ScrollReveal key={m.year} delay={i * 100}>
+            <ScrollReveal key={m.title} delay={i * 100}>
               <div className="flex gap-6 mb-8 last:mb-0">
                 <div className="flex flex-col items-center">
                   <div className="w-12 h-12 rounded-full bg-primary/10 border-2 border-primary/30 flex items-center justify-center shrink-0">
@@ -135,7 +132,7 @@ const AboutPage = () => (
         {/* Team */}
         <ScrollReveal>
           <div className="text-center mb-12">
-            <p className="text-primary font-semibold text-sm tracking-widest uppercase mb-3">The People Behind ARK</p>
+            <p className="text-primary font-semibold text-sm tracking-widest uppercase mb-3">The People Behind ArkTechify</p>
             <h2 className="font-heading text-3xl md:text-5xl font-bold">
               Meet Our <span className="text-gradient">Team</span>
             </h2>
@@ -143,7 +140,7 @@ const AboutPage = () => (
         </ScrollReveal>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-24">
           {team.map((t, i) => (
-            <ScrollReveal key={t.name} delay={i * 100}>
+            <ScrollReveal key={t.name + t.role} delay={i * 100}>
               <div className="glass rounded-xl p-8 text-center hover:border-primary/30 hover:-translate-y-1 transition-all duration-500 group">
                 <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-all duration-300">
                   <Users className="text-primary" size={28} />

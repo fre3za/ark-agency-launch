@@ -11,14 +11,32 @@ const Contact = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-    setTimeout(() => {
+    try {
+      const res = await fetch("https://formsubmit.co/ajax/sales@arktechify.com", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          message: form.message,
+          _subject: "New Contact Message from ArkTechify Website",
+        }),
+      });
+      if (res.ok) {
+        toast({ title: "Message Sent!", description: "We'll respond within 24 hours." });
+        setForm({ name: "", email: "", phone: "", message: "" });
+      } else {
+        throw new Error("Failed");
+      }
+    } catch {
+      toast({ title: "Error", description: "Something went wrong. Please try again.", variant: "destructive" });
+    } finally {
       setSubmitting(false);
-      toast({ title: "Message Sent!", description: "We'll respond within 24 hours." });
-      setForm({ name: "", email: "", phone: "", message: "" });
-    }, 1500);
+    }
   };
 
   return (
@@ -42,7 +60,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">Email</p>
-                    <p className="font-medium">hello@arktechnologies.com</p>
+                    <p className="font-medium">sales@arktechify.com</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
@@ -51,16 +69,18 @@ const Contact = () => {
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">Phone</p>
-                    <p className="font-medium">+1 (385) 240-2913</p>
+                    <p className="font-medium">+91 7566527404</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                     <MapPin className="text-primary" size={18} />
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">Location</p>
-                    <p className="font-medium">Remote — Worldwide</p>
+                    <p className="font-medium">Global Operations</p>
+                    <p className="text-sm text-muted-foreground mt-1">India (Headquarters)</p>
+                    <p className="text-sm text-muted-foreground">United States (Client Support Hours)</p>
                   </div>
                 </div>
               </div>
@@ -79,7 +99,7 @@ const Contact = () => {
               </div>
               <div>
                 <label className="block text-sm font-semibold mb-2">Phone</label>
-                <input name="phone" value={form.phone} onChange={handleChange} placeholder="+1 (555) 000-0000"
+                <input name="phone" value={form.phone} onChange={handleChange} placeholder="+91 7566527404"
                   className="w-full px-4 py-3 rounded-lg bg-card border border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors" />
               </div>
               <div>
