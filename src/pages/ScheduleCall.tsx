@@ -12,7 +12,7 @@ const ScheduleCall = () => {
             <div className="text-center mb-12">
               <p className="text-primary font-semibold text-sm tracking-widest uppercase mb-3">Schedule a Call</p>
               <h1 className="font-heading text-4xl md:text-5xl font-bold mb-4">
-                Book a <span className="text-gradient">Demo</span>
+                Book a <span className="text-gradient">Meeting</span>
               </h1>
               <p className="text-muted-foreground text-lg max-w-lg mx-auto">
                 Schedule a free 30-minute consultation with our Shopify experts.

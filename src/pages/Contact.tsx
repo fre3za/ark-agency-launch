@@ -79,8 +79,9 @@ const Contact = () => {
                   <div>
                     <p className="text-sm text-muted-foreground">Location</p>
                     <p className="font-medium">Global Operations</p>
-                    <p className="text-sm text-muted-foreground mt-1">India (Headquarters)</p>
-                    <p className="text-sm text-muted-foreground">United States (Client Support Hours)</p>
+                    <p className="text-sm text-muted-foreground mt-1">Headquarters: Chicago, IL, USA</p>
+                    <p className="text-sm text-muted-foreground">Operations: India</p>
+                    <p className="text-sm text-muted-foreground">Remote Team: Global</p>
                   </div>
                 </div>
               </div>
