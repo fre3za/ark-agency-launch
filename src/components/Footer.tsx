@@ -7,7 +7,8 @@ const Footer = () => (
     <div className="container mx-auto px-4">
       <div className="grid md:grid-cols-4 gap-12 mb-12">
         <div>
-          <img src={arkLogo} alt="ArkTechify" className="h-16 w-auto mb-4" />
+          <img src={arkLogo} alt="ArkTechify" className="h-20 w-auto mb-4" />
+          <p className="text-sm text-muted-foreground leading-relaxed">Your trusted Shopify agency for store development, optimization, and growth. We turn e-commerce challenges into opportunities.</p>
         </div>
 
         <div>
