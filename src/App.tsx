@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ScrollToTop from "./components/ScrollToTop";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import GetQuote from "./pages/GetQuote";
@@ -15,6 +16,8 @@ import CROPage from "./pages/services/CRO";
 import WhyUsPage from "./pages/WhyUs";
 import ProcessPage from "./pages/Process";
 import AboutPage from "./pages/About";
+import TermsAndConditions from "./pages/TermsAndConditions";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +27,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/get-quote" element={<GetQuote />} />
@@ -36,6 +40,8 @@ const App = () => (
           <Route path="/about" element={<AboutPage />} />
           <Route path="/why-us" element={<WhyUsPage />} />
           <Route path="/process" element={<ProcessPage />} />
+          <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
