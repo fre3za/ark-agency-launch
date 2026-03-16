@@ -18,7 +18,7 @@ const milestones = [
 
 const team = [
   { name: "Yash Paul", role: "CEO", desc: "Visionary leader driving ArkTechify's mission to empower Shopify merchants globally." },
-  { name: "Ali Sheikh", role: "Lead Developer", desc: "Full-stack expert specializing in Shopify Liquid and custom apps." },
+  { name: "David Miller", role: "Lead Developer", desc: "Full-stack expert specializing in Shopify Liquid and custom apps." },
   { name: "Joel Williamson", role: "SEO Strategist", desc: "Data-driven SEO specialist with proven e-commerce results." },
   { name: "David Miller", role: "CRO Specialist", desc: "Conversion optimization expert focused on revenue growth." },
 ];
