@@ -66,6 +66,12 @@ const Hero = () => {
           >
             Contact Us
           </Link>
+          <Link
+            to="/schedule-call"
+            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-lg font-semibold text-foreground border border-border hover:border-primary/50 hover:text-primary transition-colors"
+          >
+            Schedule a Call
+          </Link>
         </div>
       </div>
 
