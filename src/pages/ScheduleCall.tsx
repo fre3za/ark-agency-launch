@@ -1,7 +1,7 @@
 import PageLayout from "@/components/PageLayout";
 import { Calendar, Clock, Video, ExternalLink } from "lucide-react";
 
-const CALENDLY_URL = "https://calendly.com/arktechify-sales/arktechify-sales-call-30-mins";
+const CALENDLY_URL = "https://calendar.app.google/sEQR8sXxdVGDZD6x5";
 
 const ScheduleCall = () => {
   return (
