@@ -69,7 +69,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">Phone</p>
-                    <p className="font-medium">+91 7566527404</p>
+                    <p className="font-medium">+1 (570) 240-3784</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
@@ -100,7 +100,7 @@ const Contact = () => {
               </div>
               <div>
                 <label className="block text-sm font-semibold mb-2">Phone</label>
-                <input name="phone" value={form.phone} onChange={handleChange} placeholder="+1 (555) 123-4567"
+                <input name="phone" value={form.phone} onChange={handleChange} placeholder="+1 (570) 240-3784"
                   className="w-full px-4 py-3 rounded-lg bg-card border border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors" />
               </div>
               <div>
