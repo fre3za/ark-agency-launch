@@ -11,33 +11,44 @@ const Contact = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitting(true);
-    try {
-      const res = await fetch("https://formsubmit.co/ajax/sales@arktechify.com", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({
-          name: form.name,
-          email: form.email,
-          phone: form.phone,
-          message: form.message,
-          _subject: "New Contact Message from ArkTechify Website",
-        }),
+  e.preventDefault();
+  setSubmitting(true);
+
+  try {
+    const res = await fetch("/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        message: form.message,
+        _subject: "New Contact Message from ArkTechify Website",
+      }),
+    });
+
+    if (res.ok) {
+      toast({
+        title: "Message Sent!",
+        description: "We'll respond within 24 hours.",
       });
-      if (res.ok) {
-        toast({ title: "Message Sent!", description: "We'll respond within 24 hours." });
-        setForm({ name: "", email: "", phone: "", message: "" });
-      } else {
-        throw new Error("Failed");
-      }
-    } catch {
-      toast({ title: "Error", description: "Something went wrong. Please try again.", variant: "destructive" });
-    } finally {
-      setSubmitting(false);
+
+      setForm({ name: "", email: "", phone: "", message: "" });
+    } else {
+      throw new Error("Failed");
     }
-  };
+  } catch {
+    toast({
+      title: "Error",
+      description: "Something went wrong. Please try again.",
+      variant: "destructive",
+    });
+  } finally {
+    setSubmitting(false);
+  }
+};
 
   return (
     <PageLayout>
