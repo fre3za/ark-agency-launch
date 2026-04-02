@@ -17,9 +17,12 @@ const Contact = () => {
   setSubmitting(true);
 
   try {
-    const res = await fetch("/api/contact", {
+    const res = await fetch("https://formsubmit.co/ajax/sales@arktechify.com", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
       body: JSON.stringify({
         name: form.name,
         email: form.email,
