@@ -50,7 +50,7 @@ const Footer = () => (
         <div className="flex items-center gap-3">
           {[
             { icon: Instagram, href: "https://www.instagram.com/arktechify?utm_source=qr&igsh=aHE0c2t4aDFiNzlv" },
-            { icon: Linkedin, href: "https://www.linkedin.com/in/ark-techify-5a24543b7" },
+            { icon: Linkedin, href: "https://www.linkedin.com/company/arktechify/" },
             { icon: Twitter, href: "https://x.com/Arktechify" },
           ].map(({ icon: Icon, href }, i) => (
             <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/20 transition-all duration-300">
